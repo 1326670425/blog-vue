@@ -17,21 +17,22 @@ export default {
     },
     getItem(key) {
         let obj = window.localStorage.getItem(key)
-        if (obj == null)
+        if (obj == 'null' || obj == null)
             return null
+
         try {
             obj = JSON.parse(obj)
         } catch(error){
             return obj
         }
-        if (obj.expire && obj.time) {
+        if (obj.hasOwnProperty('expire') && obj.hasOwnProperty('time')) {
             if (Date.now() - obj.expire > obj.time) {
                 this.removeItem(key)
                 return null
             }else{
                 return obj.data
             }
-        }else {
+        } else {
             return obj
         }
 

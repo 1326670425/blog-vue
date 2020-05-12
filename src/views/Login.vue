@@ -2,7 +2,7 @@
 <template>
   <div style="text-align:center;margin-left:30%;margin-right: 40%;">
     <h1>账号登录</h1>
-    <el-form label-width="100px" :inline="false" v-model="loginForm">
+    <el-form label-width="100px" :model="loginForm">
       <el-form-item>
         <el-input
           v-model="loginForm.username"
@@ -56,15 +56,18 @@ export default {
   //方法集合
   methods: {
     login() {
+   
       let params = new URLSearchParams();
       params.append("username", this.loginForm.username);
       params.append("password", this.loginForm.password);
       params.append("remember-me", this.loginForm.rememberMe);
+
       this.$axios.post("/auth/login", params).then(resp => {
         if (resp.status === 200) {
           let user = resp.data.data;
-          
-          this.$router.push({
+          this.$store.commit('login', user)
+
+          this.$router.replace({
             path: "/"
           });
 
@@ -80,7 +83,9 @@ export default {
   beforeMount() {}, //生命周期 - 挂载之前
   beforeUpdate() {}, //生命周期 - 更新之前
   updated() {}, //生命周期 - 更新之后
-  beforeDestroy() {}, //生命周期 - 销毁之前
+  beforeDestroy() {
+    
+  }, //生命周期 - 销毁之前
   destroyed() {}, //生命周期 - 销毁完成
   activated() {} //如果页面有keep-alive缓存功能，这个函数会触发
 };

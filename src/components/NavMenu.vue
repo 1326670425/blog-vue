@@ -45,14 +45,12 @@ export default {
       this[command]();
     },
     register() {
-this.$router.push({name:'Register'})
+      this.$router.push({name:'Register'})
     },
     login() {
       this.$router.push({name:'Login'})
     },
     logout() {
-      var _this = this;
-
       this.$axios
         .post("/auth/logout")
         .then(resp => {
@@ -74,13 +72,13 @@ this.$router.push({name:'Register'})
     isLogin: {
       get() {
         //return false;
-        return this.$store.user == null ? false : true;
+        return this.$store.getters.user == null ? false : true;
       },
       set(newVal) {}
     },
     user() {
       //return {};
-      return this.$store.user;
+      return this.$store.getters.user;
     }
   }
 };
