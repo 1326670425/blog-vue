@@ -37,14 +37,15 @@
 
 export default {
   //import引入的组件需要注入到对象中才能使用
+  name: "Login",
   components: {},
   data() {
     //这里存放数据
     return {
-        loginForm: {
-            username: "",
-            password: "",
-            rememberMe: false
+      loginForm: {
+        username: "",
+        password: "",
+        rememberMe: false
       }
     };
   },
@@ -54,15 +55,22 @@ export default {
   watch: {},
   //方法集合
   methods: {
-      login() {
-          this.$axios.post(
-              "/hello",
-              {username: this.loginForm.username}
-          )
-          .then(resp => {
-              alert(resp.data.data)
-          })
-      }
+    login() {
+      let params = new URLSearchParams();
+      params.append("username", this.loginForm.username);
+      params.append("password", this.loginForm.password);
+      params.append("remember-me", this.loginForm.rememberMe);
+      this.$axios.post("/auth/login", params).then(resp => {
+        if (resp.status === 200) {
+          let user = resp.data.data;
+          
+          this.$router.push({
+            path: "/"
+          });
+
+        }
+      });
+    }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {},
