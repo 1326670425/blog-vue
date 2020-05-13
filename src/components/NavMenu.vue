@@ -17,6 +17,7 @@
           <el-avatar :size="40" :src="user.avatar"></el-avatar>
           <el-dropdown @command="handleCommand">
             <span class="el-dropdown-link">{{user.username}}</span>
+            <i class="el-icon-arrow-down el-icon--right"></i>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>个人中心</el-dropdown-item>
               <el-dropdown-item>消息</el-dropdown-item>
@@ -65,7 +66,7 @@ export default {
         });
     },
     publish() {
-      this.$router.push({name: 'Table', query:{key:this.keywords}});
+      this.$router.push({name: 'Content', query:{key:this.keywords}});
     }
   },
   computed: {
@@ -83,3 +84,8 @@ export default {
   }
 };
 </script>
+<style>
+  .el-dropdown-link {
+    cursor: pointer;
+  }
+</style>
