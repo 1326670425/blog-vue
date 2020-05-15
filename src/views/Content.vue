@@ -22,14 +22,16 @@
       </el-row>
 <div style="margin: 10px 0;"></div>
       <el-row>
-        <div style="text-align:center">
+        <div style="text-align:left">
           <span>{{message.content}}</span>
         </div>
       </el-row>
 <div style="margin: 10px 0;"></div>
       <el-row>
-
-         <el-button type="info" icon="el-icon-message" size="mini">{{message.commentNum}}</el-button> 
+         <el-button type="info" icon="el-icon-message" size="mini" @click="getComment(message)">{{message.commentNum}}</el-button>
+      </el-row>
+      <el-row>
+        <comment :ref="message.id" v-show="message.showComment"></comment>
       </el-row>
       <el-divider></el-divider>
     </div>
@@ -44,7 +46,7 @@ import { dateFormatter } from "@/utils/format";
 export default {
   //import引入的组件需要注入到对象中才能使用
   name: "Content",
-  components: {},
+  components: {Comment: () => import('@/components/Comment')},
   data() {
     //这里存放数据
     return {
@@ -93,11 +95,19 @@ export default {
     // 后续添加根据输入参数来指定搜索
     getDateList(key) {
       this.$axios.get("/common/message").then(resp => {
-        this.dataList = resp.data.records;
+        resp.data.records.map((item, index) => {
+          this.dataList.push(Object.assign({}, item, {showComment: false}))
+        })
       });
+      console.log(this.dataList)
     },
     format(time) {
       return dateFormatter(time);
+    },
+    getComment(message){
+      message.showComment = !message.showComment
+      if (message.showComment)
+        this.$refs[message.id][0].init(message.id)
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
