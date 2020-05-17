@@ -6,6 +6,7 @@ import store from './store'
 import Element from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css';
 
+
 var axios = require('axios')
 // 后台地址
 axios.defaults.baseURL = 'http://localhost:8080'

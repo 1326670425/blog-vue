@@ -10,7 +10,7 @@
         </el-input>
       </el-col>
       <el-col :span="4">
-        <el-button type="primary" icon="el-icon-edit" >发布</el-button>
+        <el-button type="primary" icon="el-icon-edit" @click="edit">写文章</el-button>
       </el-col>
       <el-col :span="6">
         <div v-if="isLogin">
@@ -42,6 +42,9 @@ export default {
     };
   },
   methods: {
+    edit() {
+      this.$router.push({path: '/edit'})
+    },
     handleCommand(command) {
       this[command]();
     },

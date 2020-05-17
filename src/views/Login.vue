@@ -3,7 +3,7 @@
   <div style="text-align:center;margin-left:30%;margin-right: 40%;">
     <h1>账号登录</h1>
     <el-form label-width="100px" :model="loginForm">
-      <el-form-item>
+      <el-form-item label="账号">
         <el-input
           v-model="loginForm.username"
           placeholder="用户名或邮箱"
@@ -12,7 +12,7 @@
           autosize
         ></el-input>
       </el-form-item>
-      <el-form-item>
+      <el-form-item label="密码">
         <el-input
           v-model="loginForm.password"
           placeholder="密码"

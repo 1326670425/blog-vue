@@ -22,6 +22,21 @@ Vue.use(VueRouter)
       path: '/login',
       name: 'Login',
       component: () => import('@/views/Login.vue')
+    },
+    {
+      path: '/article',
+      name: 'Article',
+      component: () => import('@/views/Article')
+    },
+    {
+      path: '/edit',
+      name: 'Edit',
+      component: () => import('@/views/Edit')
+    },
+    {
+      path: '/richeditor',
+      name: 'RichEditor',
+      component: () => import('@/components/RichEditor')
     }
 ]
 
