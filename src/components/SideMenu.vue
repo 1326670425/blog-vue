@@ -10,17 +10,17 @@
       @close="handleClose"
     >
 
-      <el-menu-item index="/table">
+      <el-menu-item index="/">
         <i class="el-icon-menu"></i>
-        <span slot="title">导航一</span>
+        <span slot="title">动态</span>
       </el-menu-item>
-      <el-menu-item index="/forget">
+      <el-menu-item index="/">
         <i class="el-icon-document"></i>
-        <span slot="title">导航二</span>
+        <span slot="title">导航</span>
       </el-menu-item>
-      <el-menu-item index="3">
+      <el-menu-item index="/table">
         <i class="el-icon-setting"></i>
-        <span slot="title">导航三</span>
+        <span slot="title">测试表单</span>
       </el-menu-item>
     </el-menu>
   </div>

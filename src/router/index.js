@@ -24,7 +24,7 @@ Vue.use(VueRouter)
       component: () => import('@/views/Login.vue')
     },
     {
-      path: '/article',
+      path: '/article/:id',
       name: 'Article',
       component: () => import('@/views/Article')
     },
@@ -32,11 +32,6 @@ Vue.use(VueRouter)
       path: '/edit',
       name: 'Edit',
       component: () => import('@/views/Edit')
-    },
-    {
-      path: '/richeditor',
-      name: 'RichEditor',
-      component: () => import('@/components/RichEditor')
     }
 ]
 

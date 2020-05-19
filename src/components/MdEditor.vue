@@ -1,36 +1,7 @@
 <!--  -->
 <template>
   <div>
-    <el-form ref="form" :model="form">
-      <el-form-item>
-        <el-input
-          type="text"
-          v-model="form.title"
-          maxlength="100"
-          show-word-limit
-          placeholder="请输入标题"
-        ></el-input>
-      </el-form-item>
-            <el-form-item>
-        <el-input
-          type="textarea"
-          :rows="2"
-          v-model="form.description"
-          maxlength="256"
-          show-word-limit
-          placeholder="请输入摘要（选填）"
-        ></el-input>
-      </el-form-item>
-      <el-form-item>
-        <mavon-editor v-model="form.content" @save="submit(0)" placeholder="开始你的创作"/>
-      </el-form-item>
-      <el-form-item style="float:right">
-        <el-button type="primary" @click="submit(1)">发布文章</el-button>
-
-        <el-button @click="submit(0)">保存草稿</el-button>
-        <el-button @click="exit" type="danger">直接退出</el-button>
-      </el-form-item>
-    </el-form>
+    <mavon-editor v-model="value" @save="save" @change="change" placeholder="开始你的创作"/>
   </div>
 </template>
 
@@ -46,46 +17,33 @@ export default {
   data() {
     //这里存放数据
     return {
-      form: {
-        title: "",
-        description: '',
-        content: ""
-      }
+      html:'',
+      value: this.content
     };
   },
+  props: ["content"],
   //监听属性 类似于data概念
-  computed: {},
+  computed: {
+  },
   //监控data中的数据变化
-  watch: {},
+  watch: {
+    content(val) {
+      return val
+    }
+  },
   //方法集合
   methods: {
-    submit(status) {
-      console.log(this.form)
+    change(value, render) {
+      this.html = render
     },
-    exit() {
-      this.$confirm(
-        "检测到未保存的内容，是否在离开页面前保存修改？",
-        "确认信息",
-        {
-          distinguishCancelAndClose: true,
-          confirmButtonText: "保存",
-          cancelButtonText: "放弃修改"
-        }
-      )
-        .then(() => {
-          this.submit(0);
-          this.back()
-        })
-        .catch(action => {
-          if (action == "cancel") 
-            this.back()
-        });
+    save(value, render){
+      this.$emit('save')
     },
-    back() {
-        if (window.history.length > 1)
-            this.$router.back(-1);
-        else
-            this.$router.push({path: '/'})
+    getContent() {
+      return this.value
+    },
+    getHTML() {
+      return this.html
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）

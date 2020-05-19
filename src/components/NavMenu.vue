@@ -43,6 +43,11 @@ export default {
   },
   methods: {
     edit() {
+      const form = {
+        title: 'test',
+        description: 'des',
+        content: 'con'
+      }
       this.$router.push({path: '/edit'})
     },
     handleCommand(command) {

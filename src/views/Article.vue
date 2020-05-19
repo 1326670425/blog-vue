@@ -1,7 +1,10 @@
 <!--  -->
 <template>
   <div>
-    <mavon-editor defaultOpen="preview" :toolbarsFlag="false" :subfield="false"></mavon-editor>
+    <mavon-editor v-if="info.type==0" defaultOpen="preview" :toolbarsFlag="false" :subfield="false" v-model="info.content"></mavon-editor>
+    <div id="richeditor" v-else>
+      {{info.content}}
+    </div>
   </div>
 </template>
 
@@ -16,19 +19,39 @@ export default {
   data() {
     //这里存放数据
     return {
+      info: {
+        userId: '',
+        username: '',
+        avatar: '',
+        id: '',
+        title: '',
+        content: '',
+        likeNum: '',
+        createTime: '',
+        type: '',
+      }
     };
   },
   //监听属性 类似于data概念
   computed: {},
   //监控data中的数据变化
-  watch: {},
+  watch: {
+  },
   //方法集合
   methods: {
+    getDetail(id) {
+      this.$axios.get('/common/article/'+id)
+      .then(resp => {
+        Object.assign(this.info, resp.data)
+      }).catch()
+    }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {},
   //生命周期 - 挂载完成（可以访问DOM元素）
-  mounted() {},
+  mounted() {
+    this.getDetail(this.$route.params.id)
+  },
   beforeCreate() {}, //生命周期 - 创建之前
   beforeMount() {}, //生命周期 - 挂载之前
   beforeUpdate() {}, //生命周期 - 更新之前
