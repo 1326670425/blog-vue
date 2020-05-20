@@ -2,13 +2,7 @@
 <template>
   <div>
     <div v-show="isLogin">
-      <el-input
-        type="textarea"
-        :autosize="{ minRows: 2, maxRows: 5}"
-        placeholder="记录此刻心情"
-        v-model="textarea"
-      ></el-input>
-      <el-button type="primary" style="float:right" @click="addMessage">发布</el-button>
+      <message :placeholder="placeholder"> </message>
     </div>
     <div style="margin: 30px 0;"></div>
     <el-select v-model="option" placeholder="请选择消息类型" @change="changeOption" size="mini">
@@ -33,11 +27,15 @@
       <el-row>
         <el-col :offset="2">
           <span v-show="option == 'message'">{{message.content}}</span>
-          <div v-show="option == 'article'">发表了文章：
-            <el-link :href="'/article/'+message.id" style="font-size:20px" type="primary">{{message.title}}<i class="el-icon-view el-icon--right"></i></el-link><br>
-            <span>{{message.description}}</span>
+          <div v-show="option == 'article'">
+            发表了文章：
+            <el-link :href="'/article/'+message.id" style="font-size:20px" type="primary">
+              {{message.title}}
+              <i class="el-icon-view el-icon--right"></i>
+            </el-link>
+            <br />
+            <span style="font-size:15px">{{message.description}}</span>
           </div>
-          
         </el-col>
       </el-row>
       <div style="margin: 10px 0"></div>
@@ -65,10 +63,14 @@ import { dateFormatter } from "@/utils/format";
 export default {
   //import引入的组件需要注入到对象中才能使用
   name: "Content",
-  components: { Comment: () => import("@/components/Comment") },
+  components: {
+    Comment: () => import("@/components/Comment"),
+    Message: () => import("@/components/Message")
+  },
   data() {
     //这里存放数据
     return {
+      placeholder: '记录一下',
       options: [
         {
           label: "微博",
@@ -106,8 +108,8 @@ export default {
   //方法集合
   methods: {
     changeOption(value) {
-      this.dataList = []
-      this.getDateList("")
+      this.dataList = [];
+      this.getDateList("");
     },
     addMessage() {
       this.$axios
@@ -129,7 +131,7 @@ export default {
     },
     // 后续添加根据输入参数来指定搜索
     getDateList(key) {
-      this.$axios.get("/common/"+ this.option).then(resp => {
+      this.$axios.get("/common/" + this.option).then(resp => {
         resp.data.records.map((item, index) => {
           this.dataList.push(Object.assign({}, item, { showComment: false }));
         });
@@ -141,7 +143,8 @@ export default {
     },
     getComment(message) {
       message.showComment = !message.showComment;
-      if (message.showComment) this.$refs[message.id][0].init(message.id);
+      var type = this.option == "article" ? 1 : 0;
+      if (message.showComment) this.$refs[message.id][0].init(message.id, type);
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）

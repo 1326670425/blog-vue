@@ -1,24 +1,26 @@
 <!--  -->
 <template>
   <div >
+
     <el-divider></el-divider>
         <div v-for="comment in commentList" style="margin-left:50px">
             <el-avatar :size="40" :src="comment.avatar" style="float:left" ></el-avatar>
             <div style="text-align:left">
       <el-row>
-          <el-link :href="comment.userId" target="_blank" style="font-size: 20px">{{comment.username}}</el-link>:
+          <el-link :href="'/user/'+comment.userId" target="_blank" style="font-size: 20px">{{comment.username}}</el-link>:
 <span>{{comment.content}}</span>
           <br>
           <span style="font-size: 12px">
               <span>{{format(comment.createTime)}}</span>
                <span style="float:right;">这里是点赞{{comment.likeNum}}</span>
-              <el-button type="text" size="mini" style="float:right;">回复</el-button>
+              <el-button type="text" size="mini" style="float:right;" @click="replay(comment.username)">回复</el-button>
           </span>
       </el-row>
           <el-link type="primary" style="float:right">共{{comment.childrenNum}}条回复</el-link>
       <el-divider></el-divider>
             </div>
     </div>
+        <message :placeholder="placeholder"></message>
   </div>
 </template>
 
@@ -28,10 +30,12 @@
 import { dateFormatter } from "@/utils/format";
 export default {
   //import引入的组件需要注入到对象中才能使用
-  components: {},
+  components: {Message: () => import("@/components/Message")},
   data() {
     //这里存放数据
     return {
+      placeholder:'',
+      commentType: 0,
       commentList: []
     };
   },
@@ -41,17 +45,22 @@ export default {
   watch: {},
   //方法集合
   methods: {
-      init(hostId) {
+      init(hostId, type) {
           this.commentList = []
+          this.placeholder = '发表一个友善的评论'
           console.log('start init comment')
-        this.getCommentList(hostId, 1)
+        this.getCommentList(hostId, type, 1)
 
       },
-    getCommentList(hostId, page, order="create_time") {
+      replay(username) {
+        this.commentType = 1
+        this.placeholder = "回复@" + username
+      },
+    getCommentList(hostId, type, page, order="create_time") {
       this.$axios.get("/common/rootComment", {
           params: {
               hostId,
-              type: 0,
+              type,
               page,
               order
           }
