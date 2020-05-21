@@ -2,7 +2,7 @@
 <template>
   <div>
     <div v-show="isLogin">
-      <message :placeholder="placeholder"> </message>
+      <message :placeholder="placeholder" @submit="addMessage"> </message>
     </div>
     <div style="margin: 30px 0;"></div>
     <el-select v-model="option" placeholder="请选择消息类型" @change="changeOption" size="mini">
@@ -25,7 +25,7 @@
       </el-row>
       <div style="margin: 10px 0;"></div>
       <el-row>
-        <el-col :offset="2">
+        <el-col :offset="2" :span="20">
           <span v-show="option == 'message'">{{message.content}}</span>
           <div v-show="option == 'article'">
             发表了文章：
@@ -82,7 +82,6 @@ export default {
         }
       ],
       option: "message",
-      textarea: "",
       dataList: []
     };
   },
@@ -111,10 +110,10 @@ export default {
       this.dataList = [];
       this.getDateList("");
     },
-    addMessage() {
+    addMessage(text) {
       this.$axios
         .post("/message/add", {
-          content: this.textarea
+          content: text
         })
         .then(resp => {
           if (resp.status == 200) {
@@ -123,7 +122,7 @@ export default {
               avatar,
               userId: id,
               username,
-              content: this.textarea,
+              content: text,
               createTime: Date.now()
             });
           }

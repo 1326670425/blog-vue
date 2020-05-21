@@ -5,7 +5,7 @@
       type="textarea"
       :autosize="{ minRows: 2, maxRows: 5}"
       :placeholder="placeholder"
-      v-model="textarea"
+      v-model="text"
     ></el-input>
     <el-button type="primary" style="float:right" @click="add">发布</el-button>
   </div>
@@ -20,7 +20,9 @@ export default {
   components: {},
   data() {
     //这里存放数据
-    return {};
+    return {
+      text: ''
+    };
   },
   props: ['placeholder'],
   //监听属性 类似于data概念
@@ -30,7 +32,7 @@ export default {
   //方法集合
   methods: {
     add(){
-      
+      this.$emit('submit', this.text)
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）

@@ -2,7 +2,6 @@
 <div>
   <el-container>
     <el-aside>
-      <switch></switch>
       <SideMenu></SideMenu>
     </el-aside>
     <el-main>

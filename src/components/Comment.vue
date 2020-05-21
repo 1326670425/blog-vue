@@ -1,26 +1,34 @@
 <!--  -->
 <template>
-  <div >
-
+  <div>
     <el-divider></el-divider>
-        <div v-for="comment in commentList" style="margin-left:50px">
-            <el-avatar :size="40" :src="comment.avatar" style="float:left" ></el-avatar>
-            <div style="text-align:left">
-      <el-row>
-          <el-link :href="'/user/'+comment.userId" target="_blank" style="font-size: 20px">{{comment.username}}</el-link>:
-<span>{{comment.content}}</span>
-          <br>
+    <div v-for="comment in commentList" style="margin-left:50px">
+      <el-avatar :size="40" :src="comment.avatar" style="float:left"></el-avatar>
+      <div style="text-align:left">
+        <el-row>
+          <el-link
+            :href="'/user/'+comment.userId"
+            target="_blank"
+            style="font-size: 20px"
+          >{{comment.username}}</el-link>:
+          <span>{{comment.content}}</span>
+          <br />
           <span style="font-size: 12px">
-              <span>{{format(comment.createTime)}}</span>
-               <span style="float:right;">这里是点赞{{comment.likeNum}}</span>
-              <el-button type="text" size="mini" style="float:right;" @click="replay(comment.username)">回复</el-button>
+            <span>{{format(comment.createTime)}}</span>
+            <span style="float:right;">这里是点赞{{comment.likeNum}}</span>
+            <el-button
+              type="text"
+              size="mini"
+              style="float:right;"
+              @click="replay(comment.username)"
+            >回复</el-button>
           </span>
-      </el-row>
-          <el-link type="primary" style="float:right">共{{comment.childrenNum}}条回复</el-link>
-      <el-divider></el-divider>
-            </div>
+        </el-row>
+        <el-link type="primary" style="float:right">共{{comment.childrenNum}}条回复</el-link>
+        <el-divider></el-divider>
+      </div>
     </div>
-        <message :placeholder="placeholder"></message>
+    <message :placeholder="placeholder" @submit="addComment"></message>
   </div>
 </template>
 
@@ -30,11 +38,11 @@
 import { dateFormatter } from "@/utils/format";
 export default {
   //import引入的组件需要注入到对象中才能使用
-  components: {Message: () => import("@/components/Message")},
+  components: { Message: () => import("@/components/Message") },
   data() {
     //这里存放数据
     return {
-      placeholder:'',
+      placeholder: "",
       commentType: 0,
       commentList: []
     };
@@ -45,39 +53,44 @@ export default {
   watch: {},
   //方法集合
   methods: {
-      init(hostId, type) {
-          this.commentList = []
-          this.placeholder = '发表一个友善的评论'
-          console.log('start init comment')
-        this.getCommentList(hostId, type, 1)
-
-      },
-      replay(username) {
-        this.commentType = 1
-        this.placeholder = "回复@" + username
-      },
-    getCommentList(hostId, type, page, order="create_time") {
-      this.$axios.get("/common/rootComment", {
+    init(hostId, type) {
+      this.commentList = [];
+      this.placeholder = "发表一个友善的评论";
+      console.log("start init comment");
+      this.getCommentList(hostId, type, 1);
+    },
+    addComment(text) {
+      console.log(text)
+    },
+    replay(username) {
+      this.commentType = 1;
+      this.placeholder = "回复@" + username;
+    },
+    getCommentList(hostId, type, page, order = "create_time") {
+      this.$axios
+        .get("/common/rootComment", {
           params: {
-              hostId,
-              type,
-              page,
-              order
+            hostId,
+            type,
+            page,
+            order
           }
-      }).then(resp => {
-        resp.data.records.map((item, index) => {
-          this.commentList.push(Object.assign({}, item, { showChild: false }));
+        })
+        .then(resp => {
+          resp.data.records.map((item, index) => {
+            this.commentList.push(
+              Object.assign({}, item, { showChild: false })
+            );
+          });
+          console.log(this.commentList);
         });
-        console.log(this.commentList)
-      });
     },
-        format(time) {
+    format(time) {
       return dateFormatter(time);
-    },
+    }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
-  created() {
-  },
+  created() {},
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {},
   beforeCreate() {}, //生命周期 - 创建之前
