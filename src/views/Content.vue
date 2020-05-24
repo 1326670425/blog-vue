@@ -2,7 +2,7 @@
 <template>
   <div>
     <div v-show="isLogin">
-      <message :placeholder="placeholder" @submit="addMessage"> </message>
+      <message :placeholder="placeholder" @submit="addMessage"></message>
     </div>
     <div style="margin: 30px 0;"></div>
     <el-select v-model="option" placeholder="请选择消息类型" @change="changeOption" size="mini">
@@ -48,10 +48,19 @@
         >{{message.commentNum}}</el-button>
       </el-row>
       <el-row>
-        <comment :ref="message.id" v-show="message.showComment"></comment>
+        <comment :ref="message.id" v-show="message.showComment" ></comment>
       </el-row>
       <el-divider></el-divider>
     </div>
+    <el-pagination
+      background
+      hide-on-single-page
+      layout="total, prev, pager, next"
+      @current-change="changePage"
+      :total="page.total"
+      :page-size="page.size"
+      :current-page.sync="page.current"
+    ></el-pagination>
   </div>
 </template>
 
@@ -70,7 +79,7 @@ export default {
   data() {
     //这里存放数据
     return {
-      placeholder: '记录一下',
+      placeholder: "记录一下",
       options: [
         {
           label: "微博",
@@ -82,7 +91,13 @@ export default {
         }
       ],
       option: "message",
-      dataList: []
+      dataList: [],
+      page: {
+        current: 1,
+        pages: 1,
+        size: 2,
+        total: 0
+      }
     };
   },
   //监听属性 类似于data概念
@@ -107,7 +122,6 @@ export default {
   //方法集合
   methods: {
     changeOption(value) {
-      this.dataList = [];
       this.getDateList("");
     },
     addMessage(text) {
@@ -129,13 +143,18 @@ export default {
         });
     },
     // 后续添加根据输入参数来指定搜索
-    getDateList(key) {
-      this.$axios.get("/common/" + this.option).then(resp => {
+    getDateList(key, currentPage = 1, size = 2) {
+      this.dataList = [];
+      this.$axios.get("/common/" + this.option, {params: {page: currentPage, size: size}}).then(resp => {
         resp.data.records.map((item, index) => {
           this.dataList.push(Object.assign({}, item, { showComment: false }));
         });
+        let {current, pages, size, total} = resp.data
+        Object.assign(this.page, {current, pages, size, total})
       });
-      console.log(this.dataList);
+    },
+    changePage(cur) {
+      this.getDateList("", cur)
     },
     format(time) {
       return dateFormatter(time);

@@ -43,7 +43,7 @@ export default {
     //这里存放数据
     return {
       form: {
-        id: 1,
+        id: null,
         title: "",
         content: ""
       },

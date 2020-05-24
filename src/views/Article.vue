@@ -1,10 +1,12 @@
 <!--  -->
 <template>
   <div>
-    <mavon-editor v-if="info.type==0" defaultOpen="preview" :toolbarsFlag="false" :subfield="false" v-model="info.content"></mavon-editor>
-    <div id="richeditor" v-else>
-      {{info.content}}
+    <div>
+      <el-avatar :size="50" :src="info.avatar"></el-avatar>
     </div>
+    <h1>{{info.title}}</h1>
+    <mavon-editor v-if="info.type==0" defaultOpen="preview" :toolbarsFlag="false" :subfield="false" v-model="info.content"></mavon-editor>
+    <div id="richeditor" v-html="info.content" v-else></div>
   </div>
 </template>
 
@@ -40,10 +42,12 @@ export default {
   //方法集合
   methods: {
     getDetail(id) {
+
       this.$axios.get('/common/article/'+id)
       .then(resp => {
         Object.assign(this.info, resp.data)
       }).catch()
+
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）

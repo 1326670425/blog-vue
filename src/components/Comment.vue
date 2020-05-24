@@ -16,12 +16,7 @@
           <span style="font-size: 12px">
             <span>{{format(comment.createTime)}}</span>
             <span style="float:right;">这里是点赞{{comment.likeNum}}</span>
-            <el-button
-              type="text"
-              size="mini"
-              style="float:right;"
-              @click="replay(comment.username)"
-            >回复</el-button>
+            <el-button type="text" size="mini" style="float:right;" @click="replay(comment)">回复</el-button>
           </span>
         </el-row>
         <el-link type="primary" style="float:right">共{{comment.childrenNum}}条回复</el-link>
@@ -43,8 +38,11 @@ export default {
     //这里存放数据
     return {
       placeholder: "",
-      commentType: 0,
-      commentList: []
+      commentType: "root",
+      commentList: [],
+      type: 0,
+      hostId: 0,
+      parentId: 0
     };
   },
   //监听属性 类似于data概念
@@ -57,14 +55,27 @@ export default {
       this.commentList = [];
       this.placeholder = "发表一个友善的评论";
       console.log("start init comment");
+      this.hostId = hostId;
+      this.type = type;
       this.getCommentList(hostId, type, 1);
     },
     addComment(text) {
-      console.log(text)
+      let info;
+      if (this.commentType == "child") {
+        info = { content: text, parentId: this.parentId };
+      } else {
+        info = { content: text, hostId: this.hostId, type: this.type };
+      }
+      console.log(this.parentId)
+      this.$axios
+        .post("/comment/" + this.commentType + "/add", info)
+        .then(resp => {console.log(resp.data)})
+        .catch();
     },
-    replay(username) {
-      this.commentType = 1;
-      this.placeholder = "回复@" + username;
+    replay(comment) {
+      this.commentType = "child";
+      this.placeholder = "回复@" + comment.username;
+      this.parentId = comment.id;
     },
     getCommentList(hostId, type, page, order = "create_time") {
       this.$axios
