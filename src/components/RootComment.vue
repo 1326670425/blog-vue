@@ -12,14 +12,25 @@
             style="font-size: 20px"
           >{{comment.username}}</el-link>:
           <span>{{comment.content}}</span>
+          <span style="float:right;">这里是点赞{{comment.likeNum}}</span>
+          <el-button type="text" size="mini" style="float:right;" @click="reply(comment)">回复</el-button>
           <br />
           <span style="font-size: 12px">
             <span>{{format(comment.createTime)}}</span>
-            <span style="float:right;">这里是点赞{{comment.likeNum}}</span>
-            <el-button type="text" size="mini" style="float:right;" @click="replay(comment)">回复</el-button>
+            <el-button
+              v-show="comment.childrenNum > 0"
+              type="text"
+              size="mini"
+              style="float:right"
+              @click="getReply(comment)"
+            >共{{comment.childrenNum}}条回复</el-button>
           </span>
         </el-row>
-        <el-link type="primary" style="float:right">共{{comment.childrenNum}}条回复</el-link>
+        <el-row>
+          <el-col :offset="2" :span="22">
+        <child-comment v-show="comment.showChild" :ref="'ChildComment'+comment.id" @replyChild="reply"></child-comment>
+          </el-col>
+        </el-row>
         <el-divider></el-divider>
       </div>
     </div>
@@ -33,7 +44,10 @@
 import { dateFormatter } from "@/utils/format";
 export default {
   //import引入的组件需要注入到对象中才能使用
-  components: { Message: () => import("@/components/Message") },
+  components: {
+    Message: () => import("@/components/Message"),
+    ChildComment: () => import("@/components/ChildComment")
+  },
   data() {
     //这里存放数据
     return {
@@ -66,13 +80,15 @@ export default {
       } else {
         info = { content: text, hostId: this.hostId, type: this.type };
       }
-      console.log(this.parentId)
+      console.log(this.parentId);
       this.$axios
         .post("/comment/" + this.commentType + "/add", info)
-        .then(resp => {console.log(resp.data)})
+        .then(resp => {
+          console.log(resp.data);
+        })
         .catch();
     },
-    replay(comment) {
+    reply(comment) {
       this.commentType = "child";
       this.placeholder = "回复@" + comment.username;
       this.parentId = comment.id;
@@ -95,6 +111,11 @@ export default {
           });
           console.log(this.commentList);
         });
+    },
+    getReply(comment) {
+      comment.showChild = !comment.showChild;
+      if (comment.showChild)
+        this.$refs["ChildComment" + comment.id][0].init(comment.id);
     },
     format(time) {
       return dateFormatter(time);

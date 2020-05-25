@@ -11,7 +11,7 @@
     <div v-for="message in dataList">
       <el-row :gutter="20">
         <el-col :span="2">
-          <el-avatar :size="50" :src="message.avatar" style="float:left"></el-avatar>
+          <el-avatar :size="50" :src="message.avatar"></el-avatar>
         </el-col>
         <el-col :span="4">
           <el-link
@@ -25,7 +25,7 @@
       </el-row>
       <div style="margin: 10px 0;"></div>
       <el-row>
-        <el-col :offset="2" :span="20">
+        <el-col :offset="2" :span="22">
           <span v-show="option == 'message'">{{message.content}}</span>
           <div v-show="option == 'article'">
             发表了文章：
@@ -48,7 +48,9 @@
         >{{message.commentNum}}</el-button>
       </el-row>
       <el-row>
-        <comment :ref="message.id" v-show="message.showComment" ></comment>
+        <el-col>
+        <root-comment :ref="'RootComment'+message.id" v-show="message.showComment" ></root-comment>
+        </el-col>
       </el-row>
       <el-divider></el-divider>
     </div>
@@ -73,7 +75,7 @@ export default {
   //import引入的组件需要注入到对象中才能使用
   name: "Content",
   components: {
-    Comment: () => import("@/components/Comment"),
+    RootComment: () => import("@/components/RootComment"),
     Message: () => import("@/components/Message")
   },
   data() {
@@ -162,7 +164,7 @@ export default {
     getComment(message) {
       message.showComment = !message.showComment;
       var type = this.option == "article" ? 1 : 0;
-      if (message.showComment) this.$refs[message.id][0].init(message.id, type);
+      if (message.showComment) this.$refs['RootComment' + message.id][0].init(message.id, type);
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
