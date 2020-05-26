@@ -28,12 +28,24 @@
         </el-row>
         <el-row>
           <el-col :offset="2" :span="22">
-        <child-comment v-show="comment.showChild" :ref="'ChildComment'+comment.id" @replyChild="reply"></child-comment>
+            <child-comment
+              v-show="comment.showChild"
+              :ref="'ChildComment'+comment.id"
+              @replyChild="reply"
+            ></child-comment>
           </el-col>
         </el-row>
         <el-divider></el-divider>
       </div>
     </div>
+    <el-pagination
+      hide-on-single-page
+      layout="prev, pager, next"
+      @current-change="changePage"
+      :total="page.total"
+      :page-size="page.size"
+      :current-page.sync="page.current"
+    ></el-pagination>
     <message :placeholder="placeholder" @submit="addComment"></message>
   </div>
 </template>
@@ -56,7 +68,13 @@ export default {
       commentList: [],
       type: 0,
       hostId: 0,
-      parentId: 0
+      parentId: 0,
+      page: {
+        current: 1,
+        pages: 1,
+        size: 1,
+        total: 0
+      }
     };
   },
   //监听属性 类似于data概念
@@ -66,12 +84,11 @@ export default {
   //方法集合
   methods: {
     init(hostId, type) {
-      this.commentList = [];
       this.placeholder = "发表一个友善的评论";
       console.log("start init comment");
       this.hostId = hostId;
       this.type = type;
-      this.getCommentList(hostId, type, 1);
+      this.getCommentList(hostId, type, this.page.current, this.page.size);
     },
     addComment(text) {
       let info;
@@ -88,18 +105,23 @@ export default {
         })
         .catch();
     },
+    changePage(cur) {
+      this.getCommentList(this.hostId, this.type, cur, this.page.size);
+    },
     reply(comment) {
       this.commentType = "child";
       this.placeholder = "回复@" + comment.username;
       this.parentId = comment.id;
     },
-    getCommentList(hostId, type, page, order = "create_time") {
+    getCommentList(hostId, type, page, size, order = "create_time") {
+      this.commentList = [];
       this.$axios
         .get("/common/rootComment", {
           params: {
             hostId,
             type,
             page,
+            size,
             order
           }
         })
@@ -109,6 +131,8 @@ export default {
               Object.assign({}, item, { showChild: false })
             );
           });
+          let { current, pages, size, total } = resp.data;
+          Object.assign(this.page, { current, pages, size, total });
           console.log(this.commentList);
         });
     },

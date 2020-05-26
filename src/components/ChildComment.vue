@@ -14,7 +14,7 @@
           <span>{{comment.content}}</span>
           <span style="float:right;">这里是点赞{{comment.likeNum}}</span>
           <el-button type="text" size="mini" style="float:right;" @click="reply(comment)">回复</el-button>
-          <br/>
+          <br />
           <span style="font-size: 12px">
             <span>{{format(comment.createTime)}}</span>
           </span>
@@ -22,6 +22,14 @@
         <el-divider></el-divider>
       </div>
     </div>
+    <el-pagination
+      hide-on-single-page
+      layout="prev, pager, next"
+      @current-change="changePage"
+      :total="page.total"
+      :page-size="page.size"
+      :current-page.sync="page.current"
+    ></el-pagination>
   </div>
 </template>
 
@@ -36,7 +44,13 @@ export default {
     //这里存放数据
     return {
       commentList: [],
-      parentId: 0
+      parentId: 0,
+      page: {
+        current: 1,
+        pages: 1,
+        size: 1,
+        total: 0
+      }
     };
   },
   //监听属性 类似于data概念
@@ -52,19 +66,25 @@ export default {
     },
 
     reply(comment) {
-        this.$emit("replyChild", comment)
+      this.$emit("replyChild", comment);
     },
-    getCommentList(parentId, page, order = "create_time") {
+    changePage(cur) {
+      this.getCommentList(this.parentId, cur, this.page.size);
+    },
+    getCommentList(parentId, page, size, order = "create_time") {
       this.$axios
         .get("/common/childComment", {
           params: {
             parentId,
             page,
+            size,
             order
           }
         })
         .then(resp => {
           this.commentList = resp.data.records;
+          let { current, pages, size, total } = resp.data;
+          Object.assign(this.page, { current, pages, size, total });
         });
     },
 
