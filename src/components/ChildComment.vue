@@ -2,7 +2,7 @@
 <template>
   <div>
     <el-divider></el-divider>
-    <div v-for="comment in commentList">
+    <div v-for="comment in commentList" :key="comment.id">
       <el-avatar :size="30" :src="comment.avatar" style="float:left"></el-avatar>
       <div style="text-align:left">
         <el-row>

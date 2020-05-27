@@ -14,7 +14,7 @@
       </el-col>
       <el-col :span="6">
         <div v-if="isLogin">
-          <el-avatar :size="40" :src="user.avatar"></el-avatar>
+          <el-avatar :size="40" :src="user.avatar" :key="user.avatar"></el-avatar>
           <el-dropdown @command="handleCommand">
             <span class="el-dropdown-link">{{user.username}}</span>
             <i class="el-icon-arrow-down el-icon--right"></i>

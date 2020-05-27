@@ -8,7 +8,7 @@
     <el-select v-model="option" placeholder="请选择消息类型" @change="changeOption" size="mini">
       <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
     </el-select>
-    <div v-for="message in dataList">
+    <div v-for="message in dataList" :key="message.id">
       <el-row :gutter="20">
         <el-col :span="2">
           <el-avatar :size="50" :src="message.avatar"></el-avatar>

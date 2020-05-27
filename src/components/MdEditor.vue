@@ -1,7 +1,7 @@
 <!--  -->
 <template>
   <div>
-    <mavon-editor v-model="value" @save="save" @change="change" placeholder="开始你的创作"/>
+    <mavon-editor ref="md" v-model="value" @save="save" @change="change" @imgAdd="imgAdd" placeholder="开始你的创作"/>
   </div>
 </template>
 
@@ -38,6 +38,16 @@ export default {
     },
     save(value, render){
       this.$emit('save')
+    },
+    imgAdd(pos, file) {
+      var formData = new FormData()
+      formData.append('file', file)
+
+      this.$axios.post('/user/uploadAvatar', formData)
+      .then(resp => {
+        this.$refs.md.$img2Url(pos, resp.data.msg);
+      })
+      
     },
     getContent() {
       return this.value
