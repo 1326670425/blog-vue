@@ -19,9 +19,9 @@
             <span class="el-dropdown-link">{{user.username}}</span>
             <i class="el-icon-arrow-down el-icon--right"></i>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>个人中心</el-dropdown-item>
-              <el-dropdown-item>消息</el-dropdown-item>
-              <el-dropdown-item>设置</el-dropdown-item>
+              <el-dropdown-item command="profile">个人中心</el-dropdown-item>
+              <el-dropdown-item command="message">消息</el-dropdown-item>
+              <el-dropdown-item command="setting">设置</el-dropdown-item>
               <el-dropdown-item command="logout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -52,6 +52,9 @@ export default {
     },
     handleCommand(command) {
       this[command]();
+    },
+    profile() {
+      this.$router.push({path: '/personal/profile'})
     },
     register() {
       this.$router.push({name:'Register'})
