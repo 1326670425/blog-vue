@@ -8,7 +8,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^1.6.0",
     "core-js": "^3.6.4",
     "element-ui": "^2.13.1",
     "mavon-editor": "^2.9.0",
